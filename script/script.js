@@ -8,7 +8,18 @@ snake[0] = {
     y: 8 * box
 }
 
+let food = {
+    x: Math.floor(Math.random() * 15 + 1) * box,
+    y: Math.floor(Math.random() * 15 + 1) * box
+}
+
 let direction = "right";
+
+function drawFood()
+{
+    context.fillStyle = "red";
+    context.fillRect(food.x, food.y, box, box);
+}
 
 function createBackground()
 {
@@ -25,34 +36,73 @@ function createSnake()
     }
 }
 
-function checkDirection(direction, snakex, snakey)
+document.addEventListener("keydown", update);
+
+function update (event)
 {
-    switch(direction)
+    if (event.keyCode == 37 && direction != "right")
     {
-        case "right":
-            snake += box;
-            break;
-        case "left":
-            snakex -= box;
-            break;
-        case "down":
-            snakey += box;
-            break;
-        case "up":
-            snakey -= box;
-            break;
+        direction = "left";
+    }
+    else if (event.keyCode == 38 && direction != "down")
+    {
+        direction = "up";
+    }
+    else if (event.keyCode == 39 && direction != "left")
+    {
+        direction = "right";
+    }
+    else if (event.keyCode == 40 && direction != "up")
+    {
+        direction = "down";
+    }
+}
+
+function loopSnake()
+{
+    if(snake[0].x > (15*box) && direction == "right")
+    {
+        snake[0].x = 0;
+    }
+    else if (snake[0].x < 0 && direction == "left")
+    {
+        snake[0].x = (16*box);
+    }
+    else if (snake[0].y > (15*box) && direction == "down")
+    {
+        snake[0].y = 0;
+    }
+    else if (snake[0].y < 0 && direction == "up")
+    {
+        snake[0].y = (16*box);
     }
 }
 
 function initGame() // Function definida para iniciar o jogo
 {   
+        loopSnake();
+        
         createBackground();
         createSnake();
+        drawFood();
 
         let snakeX = snake[0].x;
         let snakeY = snake[0].y;
 
-        checkDirection(direction, snakeX, snakeY);
+        if (direction == "right") {
+            snakeX += box;
+        }
+        else if (direction == "left") {
+            snakeX -= box;
+        }
+        else if (direction == "up") {
+            snakeY -= box;
+        }
+        else if (direction == "down") {
+            snakeY += box;
+        }
+
+        //checkDirection(direction, snakeX, snakeY);
         snake.pop();
 
         let newHead = {
